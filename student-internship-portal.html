@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Internship Portal</title>
+<style>
+:root{
+  --bg:#0b0f17; --panel:#121826; --panel2:#182033; --line:#243049;
+  --text:#e6ebf5; --muted:#8b97b1; --accent:#6c8cff; --accent2:#22d3a6;
+  --warn:#fbbf24; --danger:#f87171; --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+header{position:sticky;top:0;z-index:10;background:rgba(11,15,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1150px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:.3px}
+.logo span{color:var(--accent)}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:none;border:1px solid transparent;color:var(--muted);padding:8px 14px;border-radius:10px;cursor:pointer;font-size:.92rem}
+nav button:hover{color:var(--text)}
+nav button.active{background:var(--panel2);color:var(--text);border-color:var(--line)}
+.badge{background:var(--accent);color:#fff;border-radius:99px;font-size:.72rem;padding:1px 7px;margin-left:5px}
+main{max-width:1150px;margin:auto;padding:24px 20px 60px}
+.hero{margin-bottom:22px}
+.hero h1{font-size:1.7rem;margin-bottom:4px}
+.hero p{color:var(--muted)}
+.filters{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:10px;margin-bottom:18px}
+input,select,textarea{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:10px;font:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:90px}
+.count{color:var(--muted);font-size:.88rem;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:10px;transition:.15s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card h3{font-size:1.05rem}
+.company{color:var(--muted);font-size:.9rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:.76rem;padding:3px 9px;border-radius:99px}
+.tag.mode{color:var(--accent2)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:6px}
+.stipend{font-weight:600;color:var(--accent2)}
+.btns{display:flex;gap:8px}
+.btn{border:none;border-radius:10px;padding:8px 14px;cursor:pointer;font:inherit;font-size:.88rem;background:var(--accent);color:#fff}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.icon{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:10px;width:36px;cursor:pointer;font-size:1rem}
+.icon.on{color:var(--warn);border-color:var(--warn)}
+.empty{text-align:center;color:var(--muted);padding:50px 10px;border:1px dashed var(--line);border-radius:var(--radius)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.stat b{font-size:1.5rem;display:block}
+.stat small{color:var(--muted)}
+.app{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.app-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.status{font-size:.78rem;padding:4px 11px;border-radius:99px;font-weight:600}
+.s-Applied{background:#1e2a4d;color:#9db4ff}
+.s-Under-Review{background:#3a2f12;color:var(--warn)}
+.s-Shortlisted{background:#0f3a33;color:var(--accent2)}
+.s-Selected{background:#0f3a22;color:#4ade80}
+.s-Rejected{background:#3b1a1a;color:var(--danger)}
+.s-Withdrawn{background:#262b38;color:var(--muted)}
+.track{display:flex;align-items:center;margin:16px 0 8px}
+.step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;font-size:.72rem;color:var(--muted);text-align:center}
+.step i{width:16px;height:16px;border-radius:50%;background:var(--panel2);border:2px solid var(--line);z-index:1}
+.step.done i{background:var(--accent2);border-color:var(--accent2)}
+.step.done{color:var(--text)}
+.step::before{content:'';position:absolute;top:7px;right:50%;width:100%;height:2px;background:var(--line)}
+.step:first-child::before{display:none}
+.step.done::before{background:var(--accent2)}
+.step span{margin-top:6px}
+.meta{color:var(--muted);font-size:.85rem}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.overlay.open{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);width:100%;max-width:620px;max-height:90vh;overflow:auto;padding:24px}
+.modal h2{margin-bottom:4px}
+.modal h4{margin:16px 0 6px;color:var(--accent)}
+.modal ul{padding-left:20px;color:var(--muted)}
+.modal p{color:var(--muted)}
+.close{float:right;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.field{margin-bottom:12px}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:4px}
+.err{color:var(--danger);font-size:.78rem;margin-top:3px;display:none}
+.field.bad .err{display:block}
+.field.bad input,.field.bad textarea,.field.bad select{border-color:var(--danger)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel2);border:1px solid var(--accent2);color:var(--text);padding:11px 20px;border-radius:12px;transition:.3s;z-index:99;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+@media(max-width:760px){.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="logo">Intern<span>Hub</span> · Student Portal</div>
+    <nav id="nav">
+      <button data-view="explore" class="active">Explore</button>
+      <button data-view="saved">Saved<span class="badge" id="savedCount">0</span></button>
+      <button data-view="apps">My Applications<span class="badge" id="appCount">0</span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- EXPLORE -->
+  <section id="view-explore">
+    <div class="hero">
+      <h1>Find your next internship</h1>
+      <p>Browse opportunities, view details, apply, and track every application in one place.</p>
+    </div>
+    <div class="filters">
+      <input id="q" type="search" placeholder="Search role, company or skill...">
+      <select id="fDomain"></select>
+      <select id="fMode"></select>
+      <select id="fSort">
+        <option value="new">Sort: Latest</option>
+        <option value="stipend">Sort: Highest stipend</option>
+        <option value="deadline">Sort: Nearest deadline</option>
+      </select>
+    </div>
+    <div class="count" id="resultCount"></div>
+    <div class="grid" id="list"></div>
+  </section>
+
+  <!-- SAVED -->
+  <section id="view-saved" hidden>
+    <div class="hero"><h1>Saved internships</h1><p>Bookmarked opportunities to apply to later.</p></div>
+    <div class="grid" id="savedList"></div>
+  </section>
+
+  <!-- APPLICATIONS -->
+  <section id="view-apps" hidden>
+    <div class="hero"><h1>My applications</h1><p>Track the progress of everything you applied for.</p></div>
+    <div class="stats" id="stats"></div>
+    <div id="appList"></div>
+  </section>
+</main>
+
+<!-- Details modal -->
+<div class="overlay" id="detailOv"><div class="modal" id="detailBox"></div></div>
+<!-- Apply modal -->
+<div class="overlay" id="applyOv"><div class="modal" id="applyBox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- DATA ---------- */
+const INTERNSHIPS = [
+ {id:1,title:"Frontend Developer Intern",company:"PixelWorks",domain:"Web Development",mode:"Remote",duration:"3 months",stipend:12000,location:"Remote",deadline:"2026-12-10",posted:"2026-11-18",skills:["HTML","CSS","JavaScript","React"],about:"Build responsive UI components for client products alongside senior engineers.",resp:["Convert designs into pixel-perfect pages","Fix UI bugs and improve accessibility","Participate in code reviews"],req:["Good knowledge of HTML, CSS, JS","Basic Git usage","Portfolio or GitHub projects"]},
+ {id:2,title:"Machine Learning Intern",company:"NeuraLabs",domain:"Data Science & AI",mode:"Hybrid",duration:"6 months",stipend:20000,location:"Chennai",deadline:"2026-12-05",posted:"2026-11-15",skills:["Python","Pandas","Scikit-learn"],about:"Work on predictive models for real-world datasets and learn the full ML pipeline.",resp:["Clean and analyse datasets","Train and evaluate ML models","Document experiments and results"],req:["Python and statistics basics","Familiarity with regression/classification","Curiosity and good communication"]},
+ {id:3,title:"Java Backend Intern",company:"CoreStack Systems",domain:"Software Engineering",mode:"On-site",duration:"4 months",stipend:15000,location:"Bengaluru",deadline:"2026-12-15",posted:"2026-11-20",skills:["Java","Spring Boot","MySQL"],about:"Help develop REST APIs and database-backed services used by enterprise customers.",resp:["Write and test REST endpoints","Design simple database schemas","Fix backend bugs"],req:["Strong Java fundamentals","OOP and SQL basics","Willingness to learn Spring Boot"]},
+ {id:4,title:"UI/UX Design Intern",company:"Studio Nine",domain:"Design",mode:"Remote",duration:"3 months",stipend:10000,location:"Remote",deadline:"2026-12-01",posted:"2026-11-10",skills:["Figma","Wireframing","User Research"],about:"Design intuitive mobile and web experiences and test them with real users.",resp:["Create wireframes and prototypes","Run quick usability tests","Maintain the design system"],req:["Figma proficiency","Portfolio of 2+ projects","Eye for detail"]},
+ {id:5,title:"Cybersecurity Analyst Intern",company:"SafeNet Labs",domain:"Cybersecurity",mode:"Hybrid",duration:"3 months",stipend:14000,location:"Hyderabad",deadline:"2026-12-12",posted:"2026-11-19",skills:["Networking","Linux","Wireshark"],about:"Assist the SOC team in monitoring, analysing and reporting security events.",resp:["Monitor logs and alerts","Run vulnerability scans","Prepare incident reports"],req:["Networking fundamentals","Linux command line","Interest in ethical hacking"]},
+ {id:6,title:"Digital Marketing Intern",company:"BrandBloom",domain:"Marketing",mode:"Remote",duration:"2 months",stipend:8000,location:"Remote",deadline:"2026-11-30",posted:"2026-11-12",skills:["SEO","Content","Analytics"],about:"Plan and run social and search campaigns for growing consumer brands.",resp:["Write social media content","Track campaign analytics","Assist with SEO audits"],req:["Strong writing skills","Basic analytics knowledge","Creativity"]},
+ {id:7,title:"Data Analyst Intern",company:"InsightIQ",domain:"Data Science & AI",mode:"On-site",duration:"4 months",stipend:16000,location:"Pune",deadline:"2026-12-20",posted:"2026-11-21",skills:["SQL","Excel","Power BI"],about:"Turn raw business data into dashboards and insights for decision makers.",resp:["Write SQL queries","Build Power BI dashboards","Present findings to stakeholders"],req:["SQL and Excel basics","Analytical mindset","Clear communication"]},
+ {id:8,title:"Android App Developer Intern",company:"AppForge",domain:"Mobile Development",mode:"Hybrid",duration:"5 months",stipend:18000,location:"Chennai",deadline:"2026-12-08",posted:"2026-11-16",skills:["Kotlin","Android Studio","Firebase"],about:"Develop and ship features for consumer Android apps with real users.",resp:["Build app screens and features","Integrate Firebase services","Fix crashes and performance issues"],req:["Kotlin or Java knowledge","Understanding of Android basics","A sample app is a plus"]},
+ {id:9,title:"Cloud & DevOps Intern",company:"SkyLayer",domain:"Software Engineering",mode:"Remote",duration:"6 months",stipend:17000,location:"Remote",deadline:"2026-12-18",posted:"2026-11-22",skills:["Docker","AWS","CI/CD","Linux"],about:"Support the platform team in automating builds, deployments and monitoring.",resp:["Maintain CI/CD pipelines","Containerise applications","Monitor cloud resources"],req:["Linux basics","Interest in cloud platforms","Scripting knowledge"]},
+ {id:10,title:"Content Writing Intern",company:"WordCraft Media",domain:"Marketing",mode:"Remote",duration:"2 months",stipend:6000,location:"Remote",deadline:"2026-12-03",posted:"2026-11-14",skills:["Writing","Research","Editing"],about:"Write blogs, articles and newsletters for tech and education clients.",resp:["Research and write articles","Edit and proofread drafts","Follow brand tone guidelines"],req:["Excellent English","Writing samples","Ability to meet deadlines"]},
+ {id:11,title:"Full Stack Web Intern",company:"LaunchPad Tech",domain:"Web Development",mode:"On-site",duration:"6 months",stipend:22000,location:"Coimbatore",deadline:"2026-12-22",posted:"2026-11-23",skills:["Node.js","MongoDB","React","REST"],about:"Work across frontend and backend to deliver features for a SaaS product.",resp:["Build APIs and UI features","Write unit tests","Collaborate in agile sprints"],req:["JavaScript proficiency","Basic database knowledge","Team player"]},
+ {id:12,title:"Graphic Design Intern",company:"Studio Nine",domain:"Design",mode:"Hybrid",duration:"3 months",stipend:9000,location:"Chennai",deadline:"2026-12-07",posted:"2026-11-17",skills:["Photoshop","Illustrator","Branding"],about:"Create social, print and brand visuals for a range of creative clients.",resp:["Design posters and social creatives","Prepare brand kits","Revise designs from feedback"],req:["Adobe tools knowledge","Portfolio","Time management"]}
+];
+const STAGES = ["Applied","Under Review","Shortlisted","Selected"];
+
+/* ---------- STORAGE ---------- */
+const store = {
+  get(k,d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+};
+let saved = store.get("ip_saved",[]);
+let apps  = store.get("ip_apps",[]);
+
+/* ---------- HELPERS ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => "₹"+n.toLocaleString("en-IN")+"/mo";
+const fmtDate = d => new Date(d).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+const hasApplied = id => apps.some(a=>a.internshipId===id && a.status!=="Withdrawn");
+const byId = id => INTERNSHIPS.find(i=>i.id===id);
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("show"),2400); }
+function persist(){ store.set("ip_saved",saved); store.set("ip_apps",apps); updateBadges(); }
+function updateBadges(){ $("savedCount").textContent=saved.length; $("appCount").textContent=apps.length; }
+function daysLeft(d){ return Math.ceil((new Date(d+"T23:59:59")-new Date())/86400000); }
+
+/* ---------- FILTER SETUP ---------- */
+function fillSelect(el,label,values){ el.innerHTML=`<option value="">${label}</option>`+values.map(v=>`<option>${esc(v)}</option>`).join(""); }
+fillSelect($("fDomain"),"All domains",[...new Set(INTERNSHIPS.map(i=>i.domain))]);
+fillSelect($("fMode"),"All modes",[...new Set(INTERNSHIPS.map(i=>i.mode))]);
+["q","fDomain","fMode","fSort"].forEach(id=>$(id).addEventListener("input",renderExplore));
+
+/* ---------- CARD ---------- */
+function cardHTML(i){
+  const applied = hasApplied(i.id), isSaved = saved.includes(i.id), left = daysLeft(i.deadline);
+  return `<article class="card">
+    <div><h3>${esc(i.title)}</h3><div class="company">${esc(i.company)} · ${esc(i.location)}</div></div>
+    <div class="tags"><span class="tag mode">${esc(i.mode)}</span><span class="tag">${esc(i.duration)}</span><span class="tag">${esc(i.domain)}</span></div>
+    <div class="tags">${i.skills.map(s=>`<span class="tag">${esc(s)}</span>`).join("")}</div>
+    <div class="meta">${left>0?`Apply by ${fmtDate(i.deadline)} (${left} day${left>1?"s":""} left)`:`<span style="color:var(--danger)">Deadline passed</span>`}</div>
+    <div class="row">
+      <span class="stipend">${money(i.stipend)}</span>
+      <div class="btns">
+        <button class="icon ${isSaved?"on":""}" title="Save" data-act="save" data-id="${i.id}">${isSaved?"★":"☆"}</button>
+        <button class="btn ghost" data-act="details" data-id="${i.id}">Details</button>
+        <button class="btn" data-act="apply" data-id="${i.id}" ${applied||left<=0?"disabled":""}>${applied?"Applied ✓":"Apply"}</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ---------- EXPLORE ---------- */
+function renderExplore(){
+  const q=$("q").value.trim().toLowerCase(), d=$("fDomain").value, m=$("fMode").value, s=$("fSort").value;
+  let list=INTERNSHIPS.filter(i=>
+    (!d||i.domain===d)&&(!m||i.mode===m)&&
+    (!q||(i.title+" "+i.company+" "+i.skills.join(" ")).toLowerCase().includes(q)));
+  if(s==="stipend") list.sort((a,b)=>b.stipend-a.stipend);
+  else if(s==="deadline") list.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
+  else list.sort((a,b)=>new Date(b.posted)-new Date(a.posted));
+  $("resultCount").textContent=`${list.length} internship${list.length!==1?"s":""} found`;
+  $("list").innerHTML=list.length?list.map(cardHTML).join(""):`<div class="empty" style="grid-column:1/-1">No internships match your filters.</div>`;
+}
+
+/* ---------- SAVED ---------- */
+function renderSaved(){
+  const list=INTERNSHIPS.filter(i=>saved.includes(i.id));
+  $("savedList").innerHTML=list.length?list.map(cardHTML).join(""):`<div class="empty" style="grid-column:1/-1">You haven't saved any internships yet. Tap ☆ on a card to bookmark it.</div>`;
+}
+
+/* ---------- APPLICATIONS ---------- */
+function renderApps(){
+  const c=s=>apps.filter(a=>a.status===s).length;
+  $("stats").innerHTML=[
+    ["Total",apps.length],["Applied",c("Applied")],["Under Review",c("Under Review")],["Shortlisted",c("Shortlisted")],["Selected",c("Selected")]
+  ].map(([l,v])=>`<div class="stat"><b>${v}</b><small>${l}</small></div>`).join("");
+
+  if(!apps.length){ $("appList").innerHTML=`<div class="empty">No applications yet. Explore internships and apply to get started.</div>`; return; }
+
+  $("appList").innerHTML=[...apps].sort((a,b)=>b.appliedOn-a.appliedOn).map(a=>{
+    const i=byId(a.internshipId), idx=STAGES.indexOf(a.status);
+    const track=(a.status==="Rejected"||a.status==="Withdrawn")?"":
+      `<div class="track">${STAGES.map((s,n)=>`<div class="step ${n<=idx?"done":""}"><i></i><span>${s}</span></div>`).join("")}</div>`;
+    const active=!["Selected","Rejected","Withdrawn"].includes(a.status);
+    return `<div class="app">
+      <div class="app-top">
+        <div><h3>${esc(i.title)}</h3><div class="company">${esc(i.company)} · ${esc(i.location)}</div>
+        <div class="meta">Applied on ${fmtDate(a.appliedOn)} · Ref #${esc(a.ref)}</div></div>
+        <span class="status s-${a.status.replace(" ","-")}">${a.status}</span>
+      </div>
+      ${track}
+      <div class="meta">Applicant: ${esc(a.name)} · ${esc(a.email)} · ${esc(a.college)}</div>
+      <div class="btns" style="margin-top:12px">
+        <button class="btn ghost" data-act="details" data-id="${i.id}">View internship</button>
+        ${active?`<button class="btn ghost" data-act="advance" data-ref="${a.ref}" title="Demo only">Simulate next stage</button>
+        <button class="btn danger" data-act="withdraw" data-ref="${a.ref}">Withdraw</button>`:""}
+        ${a.status==="Withdrawn"?`<button class="btn danger" data-act="remove" data-ref="${a.ref}">Remove</button>`:""}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ---------- DETAILS MODAL ---------- */
+function openDetails(id){
+  const i=byId(id), applied=hasApplied(id), left=daysLeft(i.deadline);
+  $("detailBox").innerHTML=`
+    <button class="close" data-act="closeAll">×</button>
+    <h2>${esc(i.title)}</h2>
+    <div class="company">${esc(i.company)} · ${esc(i.location)}</div>
+    <div class="tags" style="margin:12px 0">
+      <span class="tag mode">${esc(i.mode)}</span><span class="tag">${esc(i.duration)}</span>
+      <span class="tag">${esc(i.domain)}</span><span class="tag">${money(i.stipend)}</span>
+    </div>
+    <h4>About the role</h4><p>${esc(i.about)}</p>
+    <h4>Responsibilities</h4><ul>${i.resp.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>
+    <h4>Requirements</h4><ul>${i.req.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>
+    <h4>Skills</h4><div class="tags">${i.skills.map(s=>`<span class="tag">${esc(s)}</span>`).join("")}</div>
+    <h4>Deadline</h4><p>${fmtDate(i.deadline)} ${left>0?`(${left} days left)`:"(closed)"}</p>
+    <div class="btns" style="margin-top:20px">
+      <button class="btn" data-act="apply" data-id="${i.id}" ${applied||left<=0?"disabled":""}>${applied?"Already applied ✓":"Apply now"}</button>
+      <button class="btn ghost" data-act="closeAll">Close</button>
+    </div>`;
+  $("detailOv").classList.add("open");
+}
+
+/* ---------- APPLY MODAL ---------- */
+function openApply(id){
+  const i=byId(id), prev=store.get("ip_profile",{});
+  $("detailOv").classList.remove("open");
+  $("applyBox").innerHTML=`
+    <button class="close" data-act="closeAll">×</button>
+    <h2>Apply: ${esc(i.title)}</h2>
+    <div class="company" style="margin-bottom:16px">${esc(i.company)}</div>
+    <form id="applyForm" novalidate data-id="${i.id}">
+      <div class="field"><label>Full name *</label><input name="name" value="${esc(prev.name||"")}"><div class="err">Enter your full name (min 3 characters).</div></div>
+      <div class="field"><label>Email *</label><input name="email" type="email" value="${esc(prev.email||"")}"><div class="err">Enter a valid email address.</div></div>
+      <div class="field"><label>Phone *</label><input name="phone" value="${esc(prev.phone||"")}" placeholder="10-digit mobile number"><div class="err">Enter a valid 10-digit phone number.</div></div>
+      <div class="field"><label>College / University *</label><input name="college" value="${esc(prev.college||"")}"><div class="err">Enter your college name.</div></div>
+      <div class="field"><label>Year of study *</label>
+        <select name="year"><option value="">Select</option><option>1st year</option><option>2nd year</option><option>3rd year</option><option>4th year</option></select>
+        <div class="err">Select your year of study.</div></div>
+      <div class="field"><label>Resume link (Drive / LinkedIn / GitHub) *</label><input name="resume" type="url" placeholder="https://..."><div class="err">Enter a valid link starting with http(s)://</div></div>
+      <div class="field"><label>Why should we select you? *</label><textarea name="why"></textarea><div class="err">Write at least 30 characters.</div></div>
+      <div class="btns"><button class="btn" type="submit">Submit application</button><button type="button" class="btn ghost" data-act="closeAll">Cancel</button></div>
+    </form>`;
+  $("applyOv").classList.add("open");
+  $("applyForm").addEventListener("submit",submitApply);
+}
+
+function submitApply(e){
+  e.preventDefault();
+  const f=e.target, v=n=>f.elements[n].value.trim();
+  const rules={
+    name:v("name").length>=3,
+    email:/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email")),
+    phone:/^[6-9]\d{9}$/.test(v("phone")),
+    college:v("college").length>=2,
+    year:v("year")!=="",
+    resume:/^https?:\/\/\S+\.\S+/.test(v("resume")),
+    why:v("why").length>=30
+  };
+  let ok=true;
+  Object.entries(rules).forEach(([n,pass])=>{ f.elements[n].closest(".field").classList.toggle("bad",!pass); if(!pass) ok=false; });
+  if(!ok) return;
+  const id=Number(f.dataset.id);
+  if(hasApplied(id)){ toast("You already applied to this internship."); return; }
+  apps.push({
+    ref:"SP"+Date.now().toString().slice(-7), internshipId:id, status:"Applied", appliedOn:Date.now(),
+    name:v("name"), email:v("email"), phone:v("phone"), college:v("college"), year:v("year"), resume:v("resume"), why:v("why")
+  });
+  store.set("ip_profile",{name:v("name"),email:v("email"),phone:v("phone"),college:v("college")});
+  persist(); closeAll(); refresh(); toast("Application submitted successfully!");
+}
+
+/* ---------- ACTIONS ---------- */
+function closeAll(){ $("detailOv").classList.remove("open"); $("applyOv").classList.remove("open"); }
+function refresh(){ renderExplore(); renderSaved(); renderApps(); }
+
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-act]");
+  if(e.target.classList.contains("overlay")) return closeAll();
+  if(!el) return;
+  const act=el.dataset.act, id=Number(el.dataset.id), ref=el.dataset.ref;
+  if(act==="details") openDetails(id);
+  else if(act==="apply") openApply(id);
+  else if(act==="closeAll") closeAll();
+  else if(act==="save"){
+    saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];
+    persist(); refresh(); toast(saved.includes(id)?"Saved to your list":"Removed from saved");
+  }
+  else if(act==="advance"){
+    const a=apps.find(x=>x.ref===ref), idx=STAGES.indexOf(a.status);
+    a.status=STAGES[Math.min(idx+1,STAGES.length-1)];
+    persist(); renderApps(); toast("Status updated: "+a.status);
+  }
+  else if(act==="withdraw"){
+    if(confirm("Withdraw this application?")){ apps.find(x=>x.ref===ref).status="Withdrawn"; persist(); refresh(); toast("Application withdrawn"); }
+  }
+  else if(act==="remove"){ apps=apps.filter(x=>x.ref!==ref); persist(); refresh(); }
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeAll(); });
+
+/* ---------- NAV ---------- */
+$("nav").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("active",x===b));
+  ["explore","saved","apps"].forEach(v=>$("view-"+v).hidden=(v!==b.dataset.view));
+  refresh();
+});
+
+updateBadges(); refresh();
+</script>
+</body>
+</html>
